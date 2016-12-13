@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "InterprocessCriticalSection.h"
 
-TCHAR szName[] = TEXT("Global\\MyFileMappingObject");
+TCHAR szName[] = TEXT("MyFileMappingObject");
 
 
-InterprocessCriticalSection::InterprocessCriticalSection(bool initSharedData)
+InterprocessCriticalSection::InterprocessCriticalSection()
 {
 	hMapFile = CreateFileMapping(
 		INVALID_HANDLE_VALUE,					// use paging file
@@ -34,9 +34,9 @@ InterprocessCriticalSection::InterprocessCriticalSection(bool initSharedData)
 		return;
 	}
 
-	if (initSharedData)
+	if (InterlockedCompareExchange(&(data->isInit), 1, 0) == 0)
 	{
-		memset(data, 0, sizeof(SharedData));
+		
 	}
 }
 
@@ -50,9 +50,13 @@ void InterprocessCriticalSection::LeaveCtiticalSection()
 	InterlockedDecrement(&(data->counter));
 }
 
-
-InterprocessCriticalSection::~InterprocessCriticalSection()
+void InterprocessCriticalSection::RemoveCriticalSection()
 {
 	UnmapViewOfFile(data);
 	CloseHandle(hMapFile);
+}
+
+
+InterprocessCriticalSection::~InterprocessCriticalSection()
+{
 }

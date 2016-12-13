@@ -6,16 +6,18 @@
 class InterprocessCriticalSection
 {
 public:
-	InterprocessCriticalSection(bool initSharedData);
+	InterprocessCriticalSection();
 	void EnterCriticalSection();
 	void LeaveCtiticalSection();
+	void RemoveCriticalSection();
 	~InterprocessCriticalSection();
 private:
 	HANDLE hMapFile;
 
 	struct SharedData
 	{
-		volatile unsigned long long counter;		
+		volatile unsigned long long counter;	
+		volatile unsigned long long isInit;				
 	};
 
 	SharedData *data;
