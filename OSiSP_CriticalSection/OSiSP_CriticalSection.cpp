@@ -22,6 +22,7 @@ int _tmain(int argc, TCHAR *argv[])
 
 	for (int i = 0; i < 50; ++i)
 	{
+		Sleep(50);
 		criticalSection->EnterCriticalSection();
 
 		printf_s("-----------------\nthread  enter: %d i: %d \n", GetCurrentThreadId(), i);
